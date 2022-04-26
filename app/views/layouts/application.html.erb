@@ -11,6 +11,17 @@
   </head>
 
   <body>
-    <%= yield %>
+<header>
+  <turbo-frame id="search_results" target="_top" class="empty:hidden peer-invalid:hidden"></turbo-frame>
+  <%= form_with url: searches_show_path(turbo_frame: "query_builder"), method: :get do |f| %>
+    <%= f.label(:query_builder, "What query would you like to try?") %>
+    </p><%= f.select "query_action", @queries %>
+    </p><%= f.text_area 'sql_string' %>
+    </p><%= f.submit("Submit SQL Query", :string => nil) %>
+  <% end %>
+
+<turbo-frame id="query_builder" target="_top"></turbo-frame>
+    </header>
+    <main><%= yield %></main>
   </body>
 </html>

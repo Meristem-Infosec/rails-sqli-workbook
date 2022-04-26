@@ -5,3 +5,46 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+# Users
+10.times do
+  first_name = Faker::Name.first_name
+  User.create(
+    first_name: first_name,
+    last_name: Faker::Name.last_name,
+    email: Faker::Internet.email(name: first_name),
+    pw_hash: Faker::Internet.password(min_length: 10, mix_case: true)
+  )
+end
+
+# Products
+10.times do
+  search_term = Faker::Appliance.equipment 
+  name = (Faker::Hacker.adjective + ' ' + Faker::Hipster.word + ' ' + search_term).titleize
+  Product.create(
+    name: name,
+    image_url: Faker::LoremFlickr.image(size: "200x200", search_terms: [search_term.split(' ').last]),
+    cost: Faker::Number.decimal(l_digits: 2)
+  )
+end
+
+# Orders
+2.times do
+  User.all.each do | user |
+    Order.create(
+      user_id: user.id,
+      credit_card: Faker::Finance.credit_card
+    )
+  end
+end
+
+# Order Products
+2.times do
+  Order.all.each do | order |
+    OrderProduct.create(
+      order_id: order.id,
+      product_id: Product.order(Arel.sql('RANDOM()')).first.id,
+      quantity: rand(1..10)
+    )
+  end
+end

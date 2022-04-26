@@ -1,0 +1,20 @@
+
+<%= p @params %>
+
+ <turbo-frame id="<%= params.fetch(:turbo_frame, "query_builder") %>" >
+
+<% if @results %>
+  <h1>Results</h1>
+  <%= @result.inspect %>
+
+<% elsif @previous_params %>
+  <h2>Params were:</h2>
+  <%= @previous_params.inspect %>
+
+<% elsif @error %>
+  <h2>Error Message:</h2>
+  <%= @error.inspect %>
+
+<% end %>
+
+</turbo-frame> 
