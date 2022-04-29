@@ -12,4 +12,5 @@ class SearchesController < ApplicationController
      rescue => e
           @error = e
   end
+
 end

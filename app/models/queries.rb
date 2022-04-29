@@ -29,7 +29,7 @@ Calculation methods:
     :example => "This example bypasses any conditions and deletes all users.",
     :desc => <<-MD
 Any methods which delete records should definitely be used with care!
-The `delete_all` method takes the same kind of conditions arguments as `where`.
+The `destroy` method takes the same kind of conditions arguments as `where`.
 The argument can be a string, an array, or a hash of conditions. Strings will not
 be escaped at all. Use an array or hash to safely parameterize arguments.
 Never pass user input directly to `delete_by`.
