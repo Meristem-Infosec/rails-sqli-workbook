@@ -8,14 +8,14 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: 5
-  username: postgres
+  username: sqlinjector
   timeout: 5000
 
 development:
   <<: *default
   database: db/dev_sql_postgres
   host: 127.0.0.1
-  password: injectme
+  password: <%= Rails.application.credentials.database.password %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -24,7 +24,7 @@ test:
   <<: *default
   database: db/test_sql_postgres
   host: 127.0.0.1
-  password: injectme
+  password: <%= Rails.application.credentials.database.password %>
 
 production:
   <<: *default

@@ -1,0 +1,10 @@
+<% provide(:title, "Create a Workbook") %>
+
+<h1>Create Workbook</h1>
+<BR />
+<h2>Create your own Rails SQL Injection Playground!</h2>
+<%= form_for(:session, url: sessions_path, method: :post) do |f| %>
+  <%= f.label "Unique ID" %>
+  <%= f.text_field :dbid, class: 'form-control' %>
+  <%= f.submit "Create", clas: "btn btn-primary" %>
+<% end %>

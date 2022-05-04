@@ -1,0 +1,19 @@
+<%= turbo_frame_tag "query_builder" do %>
+  <div>
+    <% if @results %>
+      <h2>Results</h1>
+      <%= @result.inspect %>
+    <% end %>
+
+    <% if @previous_params %>
+      <h2>Params were:</h2>
+      <%= @previous_params.inspect %>
+    <% end %>
+
+    <% if @error %>
+      <h2>Error Message:</h2>
+      <%= @error.inspect %>
+
+    <% end %>
+  </div>
+<% end %>

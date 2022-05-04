@@ -1,0 +1,7 @@
+  <%= form_with url: searches_index_path(turbo_frame: "query_builder"), method: :get do |f| %>
+    </p><%= f.select "query_action", @queries %>
+    </p><%= f.text_area 'sql_string' %>
+    </p><%= f.submit("Submit SQL Query", :string => nil) %>
+  <% end %>
+
+<turbo-frame id="query_builder" target="_top"></turbo-frame>
