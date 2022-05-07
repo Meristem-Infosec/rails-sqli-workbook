@@ -5,10 +5,9 @@ class SearchesController < ApplicationController
       begin
       query_type =  Queries.detect {|q| q[:action] == payload[:query_action].to_sym }
       payload[query_type[:input][:name]] = payload[:sql_string]
-
+      
       @results = eval(query_type[:query])
-
-      rescue PG::SyntaxError, PG::UndefinedColumn => e
+      rescue StandardError, PG::SyntaxError, PG::UndefinedColumn => e
             @error = e
       end
     end
