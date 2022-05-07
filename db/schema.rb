@@ -45,6 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_09_230009) do
     t.string "last_name"
     t.string "email"
     t.string "pw_hash"
+    t.boolean "is_admin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

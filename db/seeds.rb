@@ -16,6 +16,10 @@
     pw_hash: Faker::Internet.password(min_length: 10, mix_case: true)
   )
 end
+u = User.first
+u.attributes = {is_admin: true}
+u.save
+puts User.inspect
 
 # Products
 10.times do

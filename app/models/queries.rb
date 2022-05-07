@@ -3,21 +3,10 @@ Queries = [
     :action => :calculate,
     :name => "Calculate Methods",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/Calculations.html#method-i-calculate",
-    :query => "Order.calculate(:sum, params[:column])",
-    :input => {:name => :column, :example => "age) FROM users WHERE name = 'Bob';"},
-    :example => "This example finds the age of a specific user, rather than the sum of order amounts.",
-    :desc => <<-MD
-There are several methods based around `ActiveRecord::Calculations#calculate`.
-`calculate` takes an operation and a column name. The column name argument accepts SQL.
-The other calculation methods just call `calculate`, so they also accept SQL in place of column names.
-Calculation methods:
-* average
-* calculate
-* count
-* maximum
-* minimum
-* sum
-    MD
+    :query => "User.calculate(:count, payload[:column])",
+    :input => {:name => :column, :example => "first_name) from users where is_admin=true;--"},
+    :example => "This example allows you to finds the age of a specific user, rather than the sum of order amounts.",
+    :sql => "SELECT COUNT(users.[REPLACE]) FROM users"
   },
 
   {
@@ -40,7 +29,7 @@ Never pass user input directly to `delete_by`.
     :action => :destroy_by,
     :name => "Destroy By Method",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/Relation.html#method-i-destroy_by",
-    :query => 'User.destroy_by(["id = ? AND admin = \'#{params[:admin]}", params[:id]])',
+    :query => 'User.destroy_by(["id = ? AND admin = #{params[:admin]}", params[:id]])',
     :input => {:name => :admin, :example => "') OR 1=1--'"},
     :example => "This example bypasses any conditions and deletes all users.",
     :desc => <<-MD

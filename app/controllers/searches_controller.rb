@@ -1,19 +1,29 @@
 class SearchesController < ApplicationController
   def index 
-    if params[:query_action].present?
+    payload = query_params
+    if payload[:query_action].present?
       begin
-      query_type =  Queries.detect {|q| q[:action] == params[:query_action].to_sym }
-      params[query_type[:input][:name]] = params[:sql_string]
+      query_type =  Queries.detect {|q| q[:action] == payload[:query_action].to_sym }
+      payload[query_type[:input][:name]] = payload[:sql_string]
 
-      @result = eval(query_type[:query])
+      @results = eval(query_type[:query])
 
-      rescue => e
+      rescue PG::SyntaxError, PG::UndefinedColumn => e
             @error = e
       end
     end
-    @previous_params = params
+    if query_type
+    @sql_string = query_type[:sql].gsub("[REPLACE]", payload[:sql_string])
+    @previous_params = payload
+    end
     @queries ||= Queries.collect do |q|
       [q[:name], q[:action]]
     end
+  end
+
+  private
+
+  def query_params
+    params.permit(:query_action, :sql_string)
   end
 end
