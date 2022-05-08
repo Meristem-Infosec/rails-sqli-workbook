@@ -1,7 +1,23 @@
   <%= form_with url: searches_index_path(turbo_frame: "query_builder"), method: :get do |f| %>
-    </p><%= f.select "query_action", @queries %>
-    </p><%= f.text_area 'sql_string' %>
-    </p><%= f.submit("Submit SQL Query", :string => nil) %>
+    <div class="form-group dropdown mr-1" %>
+      <%= label_tag "What Active Record method would you like to work with?" %></br>
+      <%= f.select "query_action", @queries, {prompt: "Choose a method", selected: params[:query_action]}, {class: "custom-select custom-select-lg dropdown-toggle", data: {
+        id: "dropdown",
+        toggle: 'dropdown',
+        hover: 'dropdown'
+        }}
+      %>
+    </div>
+
+    <%= label_tag "Add form input which will be injected into your Active Record Method:" %></br>
+    <div class="form-group" %>
+      <%= f.text_area 'sql_string', value: params[:sql_string], id: "textarea" %>
+    </div>
+
+    <div class="form-group" %>
+      <%= f.button 'Reset', :type => 'reset', id: 'reset', class: 'btn btn-primary' %>
+      <%= f.submit("Submit SQL Query", string: nil, class: "btn btn-primary") %>
+    </div>
   <% end %>
 
 <turbo-frame id="query_builder" target="_top"></turbo-frame>
