@@ -15,9 +15,7 @@ class SearchesController < ApplicationController
     @sql_string = query_type[:sql].gsub("[REPLACE]", payload[:sql_string])
     @previous_params = payload
     end
-    @queries ||= Queries.collect do |q|
-      [q[:name], q[:action]]
-    end
+    @queries = Queries
   end
 
   private

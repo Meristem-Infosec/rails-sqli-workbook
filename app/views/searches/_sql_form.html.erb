@@ -1,7 +1,9 @@
+<% query_collection = @queries.collect {|q| [q[:name], q[:action]] } %>
+
   <%= form_with url: searches_index_path(turbo_frame: "query_builder"), method: :get, html: {name: 'query-form'} do |f| %>
     <div class="form-group mr-1" %>
       <%= label_tag "What Active Record method would you like to work with?" %></br>
-      <%= f.select "query_action", @queries, {prompt: "Choose a method", selected: params[:query_action]}, {class: "custom-select custom-select-lg"
+      <%= f.select "query_action", query_collection, {prompt: "Choose a method", selected: params[:query_action]}, {class: "custom-select custom-select-lg"
       } %>
     </div>
 

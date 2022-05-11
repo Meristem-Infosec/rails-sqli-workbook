@@ -1,31 +1,49 @@
-<div class="input">
-  <div>
-    <h1 class="fst-italic">Inject Some SQL!</h1>
-    <%= render 'sql_form' %> 
+<div class="container rounded-top">
+  <div class="row border">
+    <div class="col-7 border">
+        <h1 class="fst-italic">Inject Some SQL!</h1>
+        <%= render 'sql_form' %>
+    </div>
+
+    <div class = "col-5 border">
+      Helpful content
+      <div class = 'hiddenDivs'>
+        <%= @queries.each do |q| %>
+          <div class='border' id='<%= q[:action] %>'>
+            <p>Active Record:</p> 
+            <p/><%= ruby_color q[:query] %>
+            <p>Generated SQL:</p>
+            <p/><%= sql_color q[:sql] %>
+            <p>Explanation:</p> 
+            <p/><%= md q[:explanation] %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
-<div>
+  <div class ="row border">
+    <div class="col-9 border">
+      <%= turbo_frame_tag "query_builder" do %>
+        <% if @results %>
+          <h2>Results</h1>
+          <%= @results.inspect %>
+        <% end %>
 
-<%= turbo_frame_tag "query_builder" do %>
-  <div>
-    <% if @results %>
-      <h2>Results</h1>
-      <%= @results.inspect %>
-    <% end %>
+        <% if @sql_string %>
+          <h2>SQL String</h1>
+          <%= @sql_string %>
+        <% end %>
 
-    <% if @sql_string %>
-      <h2>SQL String</h1>
-      <%= @sql_string %>
-    <% end %>
+        <% if @previous_params %>
+          <h2>Params were:</h2>
+          <%= @previous_params.inspect %>
+        <% end %>
 
-    <% if @previous_params %>
-      <h2>Params were:</h2>
-      <%= @previous_params.inspect %>
-    <% end %>
-
-    <% if @error %>
-      <h2>Error Message:</h2>
-      <%= @error.inspect %>
-
-    <% end %>
+        <% if @error %>
+          <h2>Error Message:</h2>
+          <%= @error.inspect %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-<% end %>
+</div>
