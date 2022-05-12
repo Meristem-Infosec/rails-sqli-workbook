@@ -14,3 +14,11 @@ body {
 .btn {
   background-color: #456;
 }
+
+.selected_content {
+  display: none;
+}
+
+.selected_content.default {
+  display: block
+}

@@ -6,16 +6,21 @@
     </div>
 
     <div class = "col-5 border">
-      Helpful content
-      <div class = 'hiddenDivs'>
-        <%= @queries.each do |q| %>
-          <div class='border' id='<%= q[:action] %>'>
-            <p>Active Record:</p> 
-            <p/><%= ruby_color q[:query] %>
-            <p>Generated SQL:</p>
-            <p/><%= sql_color q[:sql] %>
-            <p>Explanation:</p> 
-            <p/><%= md q[:explanation] %>
+      <div id='Choose a method' class='selected_content default'>
+        Choose an Active Record method to learn more about how to exploit it.
+      </div>
+      <div>
+        <% @queries.each do |q| %>
+          <div class='border selected_content' id='<%= q[:action] %>'>
+
+            <h3><%= q[:name] %></h3>
+
+            <h4>Active Record:</h4>
+            <%= ruby_color q[:query] %>
+            <h4>Generated SQL:</h4>
+            <%= sql_color q[:sql] %>
+            <h4>Explanation:</h4>
+            <%= md q[:explanation] %>
           </div>
         <% end %>
       </div>
@@ -25,18 +30,18 @@
     <div class="col-9 border">
       <%= turbo_frame_tag "query_builder" do %>
         <% if @results %>
-          <h2>Results</h1>
-          <%= @results.inspect %>
+          <h2>Return Value</h1>
+          <%= ruby_color @results %>
         <% end %>
 
         <% if @sql_string %>
           <h2>SQL String</h1>
-          <%= @sql_string %>
+          <%= sql_color @sql_string %>
         <% end %>
 
         <% if @previous_params %>
           <h2>Params were:</h2>
-          <%= @previous_params.inspect %>
+          <%= ruby_color @previous_params %>
         <% end %>
 
         <% if @error %>
