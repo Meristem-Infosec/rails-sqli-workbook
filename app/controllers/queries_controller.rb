@@ -17,7 +17,6 @@ class QueriesController < ApplicationController
     end
     @queries = Queries
     @query_collection ||= Queries.collect{|q| [q[:name], q[:action]] }.unshift(["Choose a method", :choose])
-    puts @query_collection
   end
 
   private
