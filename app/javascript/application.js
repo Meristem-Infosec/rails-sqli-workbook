@@ -7,21 +7,24 @@ import "controllers"
 //= require jquery.ui.all
 //= require jquery_ujs
 //= require bootstrap-sprockets
-//= require popper
-//= require custom/buttons
 
-export function jqResetForm(form) {
+function jqResetForm() {
   document.getElementById('textarea')
     .value = '';
-  document.getElementById('query_action').options.length = 0;
+  var dropdown = document.getElementById('query_action')
+  dropdown.selectedIndex = 0;
 }
 
-$('#query_action').change(function () {
-  var idToShow = $('#query_action').find(":selected").val();
+jQuery(function () {
+  $('#query_action')
+    .on('change', function () {
+      var idToShow = $('#query_action').find(":selected").val() || "Choose a method";
 
-  $(".selected_content").each(function () {
-    $(this).css("display", $(this).is("#" + idToShow) ? 'block' : 'none');
-  })
+      $(".selected_content").each(function () {
+        $(this).css("display", $(this).is("#" + idToShow) ? 'block' : 'none');
+      })
+    })
+    .on('change', function () { });
 })
 
 window.jqResetForm = jqResetForm;
