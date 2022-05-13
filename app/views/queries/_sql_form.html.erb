@@ -7,7 +7,7 @@
 
     <%= label_tag "Add form input which will be injected into your Active Record Method:" %></br>
     <div class="form-group" %>
-      <%= f.text_area 'sql_string', value: params[:sql_string], id: "textarea" %>
+      <%= f.text_field 'sql_string', value: params[:sql_string], id: "textarea", size: 50 %>
     </div>
 
     <div class="form-group" %>
