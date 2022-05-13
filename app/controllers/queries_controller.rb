@@ -22,6 +22,6 @@ class QueriesController < ApplicationController
   private
 
   def query_params
-    params.permit(:query_action, :sql_string)
+    params.permit(:query_action, :sql_string, :commit)
   end
 end
