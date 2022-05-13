@@ -63,12 +63,11 @@ Queries = [
     :action => :from_method,
     :name => "From Method",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-from",
-    :query => "User.from(payload[:from]).where('is_admin IS NULL')",
+    :query => 'User.from(payload[:from]).where("is_admin IS NULL")',
     :input => {:name => :from, :example => "users WHERE admin = '1' OR ''=?;"},
-    :explanation => "Instead of returning all non-admin users, we return all admin users.",
     :sql => 'REPLACE',
-    :desc => <<-MD
-      The 'from' method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is "users".
+    :explanation => <<-MD
+      The from method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is users.
     MD
   },
 
@@ -129,7 +128,7 @@ Queries = [
     :input => {:name => :excluded, :example => "1)) OR 1=1 --"},
     :sql => "SELECT users.* FROM users WHERE NOT (is_admin = true OR id IN ('REPLACE')) LIMIT $1",
     :explanation => <<-MD
-      "Return all users, even if they are administrators.",
+      The not method inverts a WHERE clause. Injection into this method works the same way where it will be vulnerable only if the user controlled data is incorporated into the string directly.
     MD
   },
 
@@ -141,7 +140,7 @@ Queries = [
     :input => {:name => :column, :example => "* FROM USERS WHERE 0!=$1; --"},
     :sql => "SELECT 'REPLACE' FROM users LIMIT $1",
     :explanation => <<-MD
-      Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected.
+      The select method expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out.
     MD
   },
 
@@ -153,7 +152,7 @@ Queries = [
     :input => {:name => :column, :example => "* FROM orders WHERE 0!=$1;-- "},
     :sql => "SELECT 'REPLACE' FROM users LIMIT $1",
     :explanation => <<-MD
-      This is the same as `select`. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected, including querying totally different tables than intended.
+      This method behaves identically to select and simply overrides any previous select methods. It also expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out.
     MD
   },
 
@@ -165,7 +164,7 @@ Queries = [
     :input => {:name => :first_name, :example => "') OR 1--"},
     :sql => "SELECT users.* FROM users WHERE (first_name = 'REPLACE' AND pw_hash = 'SUBMITTED_PASSWORD') LIMIT $1",
     :explanation => <<-MD
-      The example below is using classic SQL injection to bypass authentication.
+      Where is probably the most common method used and could easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is a classic login construction. If you can return a user object, you would have been logged in as that user.
     MD
   },
 
@@ -175,8 +174,10 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-rewhere",
     :query => 'User.where(first_name: "Bob").rewhere("email LIKE \'#{payload[:search]}%\'")',
     :input => {:name => :search, :example => "a') OR 0!=$2--'"},
-    :explanation => 'Adds a new clause to the statement connected using AND',
     :sql => "SELECT users.* FROM users WHERE users.first_name = $1 AND (email LIKE ''REPLACE'%') LIMIT $2",
+    :explanation => <<-MD
+      Rewhere behaves identically to where and is used in code to override a previous clause. It could also easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is another login construction. If you can return a user object, you would have been logged in as that user.
+    MD
   },
 
   {
@@ -185,8 +186,9 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/Relation.html#method-i-update_all",
     :query => 'User.update_all("is_admin = true WHERE id IN (#{payload[:id_list]})")',
     :input => {:name => :id_list, :example => '\' OR 1=1;'},
-    :explanation => "Update every user to be an admin.",
     :sql => "UPDATE users SET is_admin = true WHERE id IN ('REPLACE')",
-    :prob => "Generates correct SQL, but doesn't modify the databse"
+    :explanation => <<-MD
+      The update all method effectively takes a where clause. If assembled using hashes it will be safe, if it is assembed using concatenation or interpolation it will be vulnerable.  NOTE: In testing this method did not actually modify the database, so other than getting past an SQL error, this method will not be much fun to work with.
+    MD
   },
 ]
