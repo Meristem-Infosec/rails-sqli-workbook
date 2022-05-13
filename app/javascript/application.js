@@ -3,10 +3,9 @@ import "@hotwired/turbo-rails"
 import "controllers"
 //= require jquery
 //= require jquery.turbolinks
-//= require jquery.cookie
-//= require jquery.ui.all
 //= require jquery_ujs
 //= require bootstrap-sprockets
+//= require turbolinks
 
 function jqResetForm() {
   document.getElementById('textarea')
@@ -15,16 +14,13 @@ function jqResetForm() {
   dropdown.selectedIndex = 0;
 }
 
-jQuery(function () {
-  $('#query_action')
-    .on('change', function () {
-      var idToShow = $('#query_action').find(":selected").val() || "Choose a method";
+function showContent() {
+  var idToShow = $('#query_action').find(":selected").val() || "Choose a method";
 
-      $(".selected_content").each(function () {
-        $(this).css("display", $(this).is("#" + idToShow) ? 'block' : 'none');
-      })
-    })
-    .on('change', function () { });
-})
+  $(".selected_content").each(function () {
+    $(this).css("display", $(this).is("#" + idToShow) ? 'block' : 'none');
+  })
+}
 
+window.showContent = showContent;
 window.jqResetForm = jqResetForm;
