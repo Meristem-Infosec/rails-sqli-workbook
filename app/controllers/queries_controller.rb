@@ -16,7 +16,7 @@ class QueriesController < ApplicationController
       @previous_params = payload
     end
     @queries = Queries
-    @query_collection ||= Queries.collect{|q| [q[:name], q[:action]] }.unshift(["Choose a method", :choose])
+    @query_collection ||= Queries.collect{|q| [q[:name], q[:action]] }
   end
 
   private

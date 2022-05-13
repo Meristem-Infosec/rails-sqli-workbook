@@ -1,13 +1,13 @@
   <%= form_with url: queries_path(turbo_frame: "query_builder"), method: :get, html: {name:'query-form'} do |f| %>
     <div class="form-group mr-1" %>
       <%= label_tag "What Active Record method would you like to work with?" %></br>
-      <%= f.select "query_action", @query_collection, {selected: params[:query_action]}, {class: "custom-select custom-select-lg", onchange: "showContent(event)"
+      <%= f.select "query_action", @query_collection, {selected: params[:query_action]}, {class: "custom-select custom-select-lg", onchange: "showContent(event)", required: true
       } %>
     </div>
 
     <%= label_tag "Add form input which will be injected into your Active Record Method:" %></br>
     <div class="form-group" %>
-      <%= f.text_field 'sql_string', value: params[:sql_string], id: "textarea", size: 50 %>
+      <%= f.text_field 'sql_string', value: params[:sql_string], id: "textarea", size: 50, required: true %>
     </div>
 
     <div class="form-group" %>

@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     # debugger
     ActiveRecord::Base.establish_connection(options)
     if session[:dbid] == params[:session][:dbid]
-      redirect_to searches_index_path
+      redirect_to queries_path
     else 
       ActiveRecord::Base.establish_connection(options(dbid: dbid))
       ActiveRecord::Tasks::DatabaseTasks::create(options(dbid: dbid))
