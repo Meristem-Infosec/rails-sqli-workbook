@@ -35,7 +35,7 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/FinderMethods.html#method-i-exists-3F",
     :query => 'User.exists?(["last_name LIKE \'#{payload[:user]}%%\'"])',
     :input => {:name => :user, :example => "' OR is_admin=true and first_name LIKE 'A" },
-    :sql => "SELECT 1 AS one FROM users WHERE (last_name LIKE 'REPLACE%') LIMIT $1  [[\"LIMIT\", 1]]",
+    :sql => "SELECT 1 AS one FROM users WHERE (last_name LIKE 'REPLACE'%) LIMIT $1  [[\"LIMIT\", 1]]",
     :explanation => "Only vulnerable if an array is passed, but request parameters can sometimes be changed to arrays. Since the method will only ever return true or false, blind injection is the likely exploit path."
   },
 
