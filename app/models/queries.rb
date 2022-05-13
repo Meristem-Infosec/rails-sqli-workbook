@@ -64,8 +64,8 @@ Queries = [
     :name => "From Method",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-from",
     :query => 'User.from(payload[:from]).where("is_admin IS NULL")',
-    :input => {:name => :from, :example => "users WHERE admin = '1' OR ''=?;"},
-    :sql => 'REPLACE',
+    :input => {:name => :from, :example => "users where is_admin=true and 0!=$1; --"},
+    :sql => 'SELECT "users".* FROM REPLACE WHERE (is_admin IS NULL) /* loading for inspect */ LIMIT $1',
     :explanation => <<-MD
       The from method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is users.
     MD
@@ -75,11 +75,11 @@ Queries = [
     :action => :group_method,
     :name => "Group Method",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-group",
-    :query => "OrderProduct.select(:quantity).group(payload[:group])",
+    :query => "OrderProduct.select(:order_id).group(payload[:group])",
     :input => {:name => :group, :example => "id from order_products where 99=$1;--"},
-    :sql => "SELECT order_products.order_iq, sum(quantity) FROM order_products GROUP BY order_products.order_iq LIMIT $1",
+    :sql => "SELECT order_products.quantity FROM order_products GROUP BY REPLACE LIMIT $1",
     :explanation => <<-MD
-      The group method accepts the field name to group by. Since grouping by a column that was not selected would result in an SQL error, rails automatically puts the value in both the SELECT and GROUP BY clauses.  Often this means injecting into the SELECT portion and commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id.
+      METHOD INCOMPLETE The group method accepts the field name to group by. nd commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id.
     MD
   },
 
@@ -104,7 +104,7 @@ Queries = [
     :input => {:name => :table, :example => "--"},
     :sql => 'REPLACE',
     :explanation => <<-MD
-      Normally joins are handled automatically using the relationships defined in the models, however the joins method can be used to form a temporary relationship. The method expects a table name, but does not escape the value. Applications may set the table name on the client side and pass it as a request parameter. An attacker could tamper with that parameter to achieve injection. In this contrived example, on the value 'orders' would normally work.
+      BOOKMARK - ACTUALLY BEHAVES AS A PLACEHODER FOR INNER JOIN...Normally joins are handled automatically using the relationships defined in the models, however the joins method can be used to form a temporary relationship. The method expects a table name, but does not escape the value. Applications may set the table name on the client side and pass it as a request parameter. An attacker could tamper with that parameter to achieve injection. In this contrived example, on the value 'orders' would normally work.
     MD
   },
 
