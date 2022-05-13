@@ -1,3 +1,5 @@
+<% content_for :head do %>
+<% end %>
 <div class="container rounded-top">
   <div class="row border">
     <div class="col-7 border">
@@ -31,7 +33,7 @@
       <%= turbo_frame_tag "query_builder" do %>
         <% if @results %>
           <h2>Return Value</h1>
-          <%= ruby_color @results %>
+          <%= ruby_color @results.inspect %>
         <% end %>
 
         <% if @sql_string %>
