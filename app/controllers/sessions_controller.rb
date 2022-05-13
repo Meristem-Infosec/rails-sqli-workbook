@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
   
   def create
     dbid = params[:session][:dbid]
-    # debugger
     ActiveRecord::Base.establish_connection(options)
     if session[:dbid] == params[:session][:dbid]
       redirect_to queries_path

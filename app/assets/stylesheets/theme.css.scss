@@ -22,3 +22,74 @@ body {
 .selected_content.default {
   display: block
 }
+
+
+div h1 {
+  padding-top: 20;
+}
+
+.gutter {
+  margin-top: 60px;
+}
+
+.footer {
+  bottom: 0;
+  width: 100%;
+  /* Vertically center the text there */
+  background-color: #f5f5f5;
+  padding-top: 50;
+  border-width: 4;
+  border-style: groove;
+}
+
+body>.container {
+  padding: 60px 15px 0;
+}
+
+.footer>.container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.spoiler {
+  transition: color 0.5s;
+  position: relative
+}
+
+/* relative position for positioning the pseudo-element */
+.spoiler:not(:hover),
+.spoiler:not(:hover) * {
+  color: transparent
+}
+
+.spoiler * {
+  transition: color 0.5s, background 0.5s
+}
+
+.spoiler:not(:hover) * {
+  background: transparent
+}
+
+.spoiler::after {
+  content: 'hover & double click to copy';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+}
+
+.spoiler:not(:hover)::after {
+  color: #666;
+  transition: color 0.3s 0.3s;
+  /* delayed transition to keep the text from overlapping */
+}

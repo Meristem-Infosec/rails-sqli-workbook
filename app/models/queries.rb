@@ -6,9 +6,7 @@ Queries = [
     :query => "User.calculate(:count, payload[:column])",
     :input => {:name => :column, :example => "first_name) from users where is_admin=true;--"},
     :sql => "SELECT COUNT(users.'REPLACE') FROM users",
-    :explanation => <<-MD
-    The COUNT method is used here, but all of the calculate methods accept the name of the column as the second parameter.  That value is not escaped so if a request parameter is used here, the method will be vulnerable.
-      MD
+    :explanation => "The COUNT method is used here, but all of the calculate methods accept the name of the column as the second parameter.  That value is not escaped so if a request parameter is used here, the method will be vulnerable."
   },
 
   {
@@ -18,9 +16,7 @@ Queries = [
     :query => 'OrderProduct.delete_by("id = #{payload[:id]}")',
     :input => {:name => :id, :example => '1) OR 1=1--'},
     :sql => "DELETE FROM order_products WHERE (id = 'REPLACE')",
-    :explanation => <<-MD
-      This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause.
-    MD
+    :explanation => "This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause."
   },
 
   {
@@ -30,9 +26,7 @@ Queries = [
     :query => 'User.destroy_by(["id = ? AND is_admin = #{payload[:is_admin]}", params[:id]])',
     :input => {:name => :is_admin, :example => "false) OR 1=1 --"},
     :sql => "SELECT users.* FROM users WHERE (id = NULL AND is_admin = 'REPLACE')",
-    :explanation => <<-MD
-      This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause.
-    MD
+    :explanation => "This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause."
   },
 
   {
@@ -42,9 +36,7 @@ Queries = [
     :query => 'User.exists?(["last_name LIKE \'#{payload[:user]}%%\'"])',
     :input => {:name => :user, :example => "' OR is_admin=true and first_name LIKE 'A" },
     :sql => "SELECT 1 AS one FROM users WHERE (last_name LIKE 'REPLACE%') LIMIT $1  [[\"LIMIT\", 1]]",
-    :explanation => <<-MD
-      Only vulnerable if an array is passed, but request parameters can sometimes be changed to arrays. Since the method will only ever return true or false, blind injection is the likely exploit path.
-    MD
+    :explanation => "Only vulnerable if an array is passed, but request parameters can sometimes be changed to arrays. Since the method will only ever return true or false, blind injection is the likely exploit path."
   },
 
   {
@@ -54,9 +46,7 @@ Queries = [
     :query => 'User.find_by("first_name = \'#{payload[:first_name]}\' AND pw_hash = \'#{params[:password]}\'")',
     :input => {:name => :first_name, :example => "') OR 1=$1 --"},
     :sql => "SELECT users.* FROM users WHERE (first_name = 'REPLACE' AND pw_hash = '')",
-    :explanation => <<-MD
-      This method accepts a WHERE clause and will encode parameters if passed as a hash.  It is vulnerable if the user data is directly incorporated into the string. This example simulates a login query. Successfully, returning a user object would result in logging in as that user. 
-    MD
+    :explanation => "This method accepts a WHERE clause and will encode parameters if passed as a hash.  It is vulnerable if the user data is directly incorporated into the string. This example simulates a login query. Successfully, returning a user object would result in logging in as that user."
   },
 
   {
@@ -66,9 +56,7 @@ Queries = [
     :query => 'User.from(payload[:from]).where("is_admin IS NULL")',
     :input => {:name => :from, :example => "users WHERE admin = '1' OR ''=?;"},
     :sql => 'REPLACE',
-    :explanation => <<-MD
-      The from method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is users.
-    MD
+    :explanation => "The from method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is users."
   },
 
   {
@@ -78,9 +66,7 @@ Queries = [
     :query => "OrderProduct.select(:quantity).group(payload[:group])",
     :input => {:name => :group, :example => "id from order_products where 99=$1;--"},
     :sql => "SELECT order_products.order_iq, sum(quantity) FROM order_products GROUP BY order_products.order_iq LIMIT $1",
-    :explanation => <<-MD
-      The group method accepts the field name to group by. Since grouping by a column that was not selected would result in an SQL error, rails automatically puts the value in both the SELECT and GROUP BY clauses.  Often this means injecting into the SELECT portion and commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id.
-    MD
+    :explanation => "The group method accepts the field name to group by. Since grouping by a column that was not selected would result in an SQL error, rails automatically puts the value in both the SELECT and GROUP BY clauses.  Often this means injecting into the SELECT portion and commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id."
   },
 
   {
@@ -90,9 +76,7 @@ Queries = [
     :query => 'Order.where(:user_id => 1).group(:user_id).having("total > #{payload[:total]}")',
     :input => {:name => :total, :example => "1) UNION SELECT * FROM orders--"},
     :sql => 'REPLACE',
-    :explanation => <<-MD 
-      METHOD INCOMPLETE - The having method is like a WHERE clause but it was designed to act on aggregator functions. A query with a HAVING clause must also have a GROUP BY clause. ????. Since grouping by a column that was not selected would result in an SQL error, rails automatically puts the value in both the SELECT and GROUP BY clauses.  Often this means injecting into the SELECT portion and commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id.
-    MD
+    :explanation => "METHOD INCOMPLETE - The having method is like a WHERE clause but it was designed to act on aggregator functions. A query with a HAVING clause must also have a GROUP BY clause. ????. Since grouping by a column that was not selected would result in an SQL error, rails automatically puts the value in both the SELECT and GROUP BY clauses.  Often this means injecting into the SELECT portion and commenting the rest of the automatic query will be easiest. Valid non-injection input for this field is order_id and product_id."
   },
 
 
@@ -103,9 +87,7 @@ Queries = [
     :query => 'User.joins(payload[:table]).where("credit_card IS NULL").all',
     :input => {:name => :table, :example => "--"},
     :sql => 'REPLACE',
-    :explanation => <<-MD
-      Normally joins are handled automatically using the relationships defined in the models, however the joins method can be used to form a temporary relationship. The method expects a table name, but does not escape the value. Applications may set the table name on the client side and pass it as a request parameter. An attacker could tamper with that parameter to achieve injection. In this contrived example, on the value 'orders' would normally work.
-    MD
+    :explanation => "Normally joins are handled automatically using the relationships defined in the models, however the joins method can be used to form a temporary relationship. The method expects a table name, but does not escape the value. Applications may set the table name on the client side and pass it as a request parameter. An attacker could tamper with that parameter to achieve injection. In this contrived example, on the value 'orders' would normally work."
   },
 
   {
@@ -115,9 +97,7 @@ Queries = [
     :query => "User.where('id > 1').lock(payload[:lock])",
     :input => {:name => :lock, :example => "?"},
     :sql => "SELECT users.* FROM users WHERE (id > 1) LIMIT $1 'REPLACE'",
-    :explanation => <<-MD
-      The value is database dependent.  Unlikely to be a user controlled variable, but may be a hidden parameter designed to control behavior of different queries executed from the same form. Postgres values include FOR UPDATE, FOR SHARE, and FOR NO KEY UPDATE.  The value specified is directly appended to the end of the query, but after the LIMIT clause so it is too late for a UNION.  Can add OFFSET to select a different record than intended by the application e.g. OFFSET 1
-    MD
+    :explanation => "The value is database dependent.  Unlikely to be a user controlled variable, but may be a hidden parameter designed to control behavior of different queries executed from the same form. Postgres values include FOR UPDATE, FOR SHARE, and FOR NO KEY UPDATE.  The value specified is directly appended to the end of the query, but after the LIMIT clause so it is too late for a UNION.  Can add OFFSET to select a different record than intended by the application e.g. OFFSET 1"
   },
 
   {
@@ -127,9 +107,7 @@ Queries = [
     :query => 'User.where.not("is_admin = true OR id IN (#{payload[:excluded]})").all',
     :input => {:name => :excluded, :example => "1)) OR 1=1 --"},
     :sql => "SELECT users.* FROM users WHERE NOT (is_admin = true OR id IN ('REPLACE')) LIMIT $1",
-    :explanation => <<-MD
-      The not method inverts a WHERE clause. Injection into this method works the same way where it will be vulnerable only if the user controlled data is incorporated into the string directly.
-    MD
+    :explanation => "The not method inverts a WHERE clause. Injection into this method works the same way where it will be vulnerable only if the user controlled data is incorporated into the string directly."
   },
 
   {
@@ -139,9 +117,7 @@ Queries = [
     :query => 'User.select(payload[:column])',
     :input => {:name => :column, :example => "* FROM USERS WHERE 0!=$1; --"},
     :sql => "SELECT 'REPLACE' FROM users LIMIT $1",
-    :explanation => <<-MD
-      The select method expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out.
-    MD
+    :explanation => "The select method expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out."
   },
 
   {
@@ -151,9 +127,7 @@ Queries = [
     :query => 'User.select(:name).reselect(payload[:column])',
     :input => {:name => :column, :example => "* FROM orders WHERE 0!=$1;-- "},
     :sql => "SELECT 'REPLACE' FROM users LIMIT $1",
-    :explanation => <<-MD
-      This method behaves identically to select and simply overrides any previous select methods. It also expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out.
-    MD
+    :explanation => "This method behaves identically to select and simply overrides any previous select methods. It also expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out."
   },
 
   {
@@ -163,9 +137,7 @@ Queries = [
     :query => 'User.where("first_name = \'#{payload[:first_name]}\' AND pw_hash = \'SUBMITTED_PASSWORD\'")',
     :input => {:name => :first_name, :example => "') OR 1--"},
     :sql => "SELECT users.* FROM users WHERE (first_name = 'REPLACE' AND pw_hash = 'SUBMITTED_PASSWORD') LIMIT $1",
-    :explanation => <<-MD
-      Where is probably the most common method used and could easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is a classic login construction. If you can return a user object, you would have been logged in as that user.
-    MD
+    :explanation => "Where is probably the most common method used and could easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is a classic login construction. If you can return a user object, you would have been logged in as that user."
   },
 
   {
@@ -175,9 +147,7 @@ Queries = [
     :query => 'User.where(first_name: "Bob").rewhere("email LIKE \'#{payload[:search]}%\'")',
     :input => {:name => :search, :example => "a') OR 0!=$2--'"},
     :sql => "SELECT users.* FROM users WHERE users.first_name = $1 AND (email LIKE ''REPLACE'%') LIMIT $2",
-    :explanation => <<-MD
-      Rewhere behaves identically to where and is used in code to override a previous clause. It could also easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is another login construction. If you can return a user object, you would have been logged in as that user.
-    MD
+    :explanation => "Rewhere behaves identically to where and is used in code to override a previous clause. It could also easily incorporate user data unsafely through string concatenation or interpolation. If data is passed correctly as a hash, Rails will safely encoded it. The example here is another login construction. If you can return a user object, you would have been logged in as that user."
   },
 
   {
@@ -187,8 +157,6 @@ Queries = [
     :query => 'User.update_all("is_admin = true WHERE id IN (#{payload[:id_list]})")',
     :input => {:name => :id_list, :example => '\' OR 1=1;'},
     :sql => "UPDATE users SET is_admin = true WHERE id IN ('REPLACE')",
-    :explanation => <<-MD
-      The update all method effectively takes a where clause. If assembled using hashes it will be safe, if it is assembed using concatenation or interpolation it will be vulnerable.  NOTE: In testing this method did not actually modify the database, so other than getting past an SQL error, this method will not be much fun to work with.
-    MD
+    :explanation => "The update all method effectively takes a where clause. If assembled using hashes it will be safe, if it is assembed using concatenation or interpolation it will be vulnerable.  NOTE: In testing this method did not actually modify the database, so other than getting past an SQL error, this method will not be much fun to work with."
   },
 ]

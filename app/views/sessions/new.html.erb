@@ -1,10 +1,40 @@
-<% provide(:title, "Create a Workbook") %>
+  <% provide(:title, "Create a Workbook") %>
+<div class="container">
+  <div class="row">
+    <div class="col-l2">
+      <h1>Create your own Rails SQL Injection Playground!</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3">
+    </div>
 
-<h1>Create Workbook</h1>
-<BR />
-<h2>Create your own Rails SQL Injection Playground!</h2>
-<%= form_for(:session, url: sessions_path, method: :post) do |f| %>
-  <%= f.label "Unique ID" %>
-  <%= f.text_field :dbid, class: 'form-control' %>
-  <%= f.submit "Create", clas: "btn btn-primary" %>
-<% end %>
+    <div class="col-6">
+      <div class="card" style="100rem;">
+        <%= form_for(:session, url: sessions_path, method: :post) do |f| %>
+        <div class="card-header">
+          Choose a unique string
+        </div>
+        <div class="card-body" >
+          <%= f.text_field :dbid, size: 25, class: "form-control" %>
+          <%= f.submit "Create DB", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+      </div>
+    </div>
+
+    <div class="col-3">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 gutter">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-5">
+      <%= render "layouts/footer" %>
+    </div>
+  </div>
+</div>
