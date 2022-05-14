@@ -45,7 +45,7 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/FinderMethods.html#method-i-find_by",
     :query => 'User.find_by("first_name = \'#{payload[:first_name]}\' AND pw_hash = \'#{params[:password]}\'")',
     :input => {:name => :first_name, :example => "') OR 1=$1 --"},
-    :sql => "SELECT users.* FROM users WHERE (first_name = 'REPLACE' AND pw_hash = '')",
+    :sql => "SELECT users.* FROM users WHERE (first_name = ''REPLACE'' AND pw_hash = '')",
     :explanation => "This method accepts a WHERE clause and will encode parameters if passed as a hash.  It is vulnerable if the user data is directly incorporated into the string. This example simulates a login query. Successfully, returning a user object would result in logging in as that user."
   },
 
@@ -55,7 +55,7 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-from",
     :query => 'User.from(payload[:from]).where("is_admin IS NULL")',
     :input => {:name => :from, :example => "users where is_admin=true and 0!=$1; --"},
-    :sql => "SELECT "users".* FROM 'REPLACE' WHERE (is_admin IS NULL) /* loading for inspect */ LIMIT $1",
+    :sql => "SELECT users.* FROM 'REPLACE' WHERE (is_admin IS NULL) LIMIT $1",
     :explanation => "The from method expects a table name, but does not encode the value. An application may populate a request paramter with a known good value and use it in this method forgetting that an attacker can modify all parameters sent to the server. This example is very contrived and the only valid (non-injection) input is users."
   },
 
