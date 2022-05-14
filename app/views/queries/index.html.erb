@@ -37,7 +37,7 @@
       <% @queries.each do |q| %>
         <div class='card selected_content' id='<%= q[:action] %>'>
           <div class="card-header">
-            <%= q[:name] %>
+            <a href="<%= q[:link] %>" target="_blank"><%= q[:name] %></a>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
