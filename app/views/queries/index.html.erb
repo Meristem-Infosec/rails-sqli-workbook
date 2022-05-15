@@ -1,35 +1,36 @@
 <div class="row">
-  <div class="col-6">
+  <div class="col-5">
     <h1 class="fst-italic">Inject Some SQL!</h1>
     <%= render 'sql_form' %>
   
   <%= turbo_frame_tag "query_builder" do %>
 
-  <% if @error %>
-    <div class="row feedback">
-      <div class="col-12">
-          <h6>Error Message:</h6>
+  <div class="row feedback">
+    <div class="col-12">
+      <div class="pt-2">
+        <% if @error %>
+          <h4>Error Message:</h4>
           <%= @error.inspect %>
+        <% end %>
       </div>
-    </div>
-  <% end %>
-
-  <div class ="row">
-    <div class="col-12 feedback">
-      <% if @results %>
-        <h4>Return Value</h4>
-        <%= ruby_color @results.inspect %>
-      <% end %>
-
-      <% if @sql_string %>
-        <h4>Actual SQL</h4>
-        <%= sql_color @sql_string %>
+      <div class="pt-2">
+        <% if @results %>
+          <h4>Return Value</h4>
+          <%= ruby_color @results.inspect %>
+        <% end %>
+      </div>
+      <div class="pt-2">
+        <% if @sql_string %>
+          <h4>Actual SQL</h4>
+          <%= sql_color @sql_string %>
+      </div>
       <% end %>
     </div>  
   </div>  
-<% end %></div>
+<% end %>
+</div>
 
-  <div class = "col-6">
+  <div class = "col-7">
     <div id='Choose a method' class='card selected_content default'>
       Choose an Active Record method to learn more about how to exploit it.
     </div>

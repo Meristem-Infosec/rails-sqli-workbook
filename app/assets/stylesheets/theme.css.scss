@@ -3,6 +3,10 @@ body {
   height: 100vh;
 }
 
+.navbar-brand {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
 .input {
   color: #000;
 }
@@ -51,14 +55,16 @@ body>.container {
   padding-left: 15px;
 }
 
-h1,
-h2,
-h3,
-h4,
 h5,
 h6 {
   font-family: Arial, Helvetica, sans-serif;
+}
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
 }
 
 .spoiler {
@@ -81,7 +87,7 @@ h6 {
 }
 
 .spoiler::after {
-  content: 'hover & double click to copy';
+  content: 'hover & double click to select';
   position: absolute;
   top: 0;
   left: 0;
@@ -92,4 +98,9 @@ h6 {
   color: #666;
   transition: color 0.3s 0.3s;
   /* delayed transition to keep the text from overlapping */
+}
+
+.card-header {
+  font-weight: bold;
+  font-size: 1.3rem;
 }

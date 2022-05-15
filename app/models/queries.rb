@@ -6,7 +6,7 @@ Queries = [
     :query => "User.calculate(:count, payload[:column])",
     :input => {:name => :column, :example => "first_name) from users where is_admin=true;--"},
     :sql => "SELECT COUNT(users.'REPLACE') FROM users",
-    :explanation => "The COUNT method is used here, but all of the calculate methods accept the name of the column as the second parameter.  That value is not escaped so if a request parameter is used here, the method will be vulnerable."
+    :explanation => "The COUNT method is used in this example query, but all of the calculate methods accept the name of the column as the second parameter.  That value is not escaped so if a request parameter is used here, the method will be vulnerable."
   },
 
   {
@@ -16,7 +16,7 @@ Queries = [
     :query => 'OrderProduct.delete_by("id = #{payload[:id]}")',
     :input => {:name => :id, :example => '1) OR 1=1--'},
     :sql => "DELETE FROM order_products WHERE (id = 'REPLACE')",
-    :explanation => "This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause."
+    :explanation => "This method effectively accepts a WHERE clause. Hash parameters will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated (via interpolation) into the clause."
   },
 
   {
@@ -26,7 +26,7 @@ Queries = [
     :query => 'User.destroy_by(["id = ? AND is_admin = #{payload[:is_admin]}", params[:id]])',
     :input => {:name => :is_admin, :example => "false) OR 1=1 --"},
     :sql => "SELECT users.* FROM users WHERE (id = NULL AND is_admin = 'REPLACE')",
-    :explanation => "This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated into the clause."
+    :explanation => "This method effectively accepts a WHERE clause. Hashes will be encoded, so this method is only vulnerable if user-controlled data is directly incorporated (via interpolation) into the clause."
   },
 
   {

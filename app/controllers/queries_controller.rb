@@ -7,8 +7,10 @@ class QueriesController < ApplicationController
       payload[query_type[:input][:name]] = payload[:sql_string]
       
       @results = eval(query_type[:query])
-      rescue StandardError => e
+      eval(@results.to_sql) if @results.is_a? ActiveRecord::Relation
+      rescue Exception => e
             @error = e
+            @results = nil
       end
     end
     if query_type
