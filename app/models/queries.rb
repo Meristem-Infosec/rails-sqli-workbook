@@ -35,7 +35,7 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/FinderMethods.html#method-i-exists-3F",
     :query => 'User.exists?(["last_name LIKE \'#{payload[:user]}%%\'"])',
     :input => {:name => :user, :example => "' OR is_admin=true and first_name LIKE 'A" },
-    :sql => "SELECT 1 AS one FROM users WHERE (last_name LIKE 'REPLACE'%) LIMIT $1  [[\"LIMIT\", 1]]",
+    :sql => "SELECT 1 AS one FROM users WHERE (last_name LIKE ''REPLACE'%') LIMIT $1  [[\"LIMIT\", 1]]",
     :explanation => "Only vulnerable if an array is passed, but request parameters can sometimes be changed to arrays. Since the method will only ever return true or false, blind injection is the likely exploit path."
   },
 
@@ -43,7 +43,7 @@ Queries = [
     :action => :find_by,
     :name => "Find By Method",
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/FinderMethods.html#method-i-find_by",
-    :query => 'User.find_by("first_name = \'#{payload[:first_name]}\' AND pw_hash = \'#{params[:password]}\'")',
+    :query => 'User.find_by("first_name = \'#{payload[:first_name]}\' AND pw_hash = \'#{params[:not_used_in_demo]}\'")',
     :input => {:name => :first_name, :example => "') OR 1=$1 --"},
     :sql => "SELECT users.* FROM users WHERE (first_name = ''REPLACE'' AND pw_hash = '')",
     :explanation => "This method accepts a WHERE clause and will encode parameters if passed as a hash.  It is vulnerable if the user data is directly incorporated into the string. This example simulates a login query. Successfully, returning a user object would result in logging in as that user."
@@ -86,8 +86,8 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-joins",
     :query => 'User.joins(payload[:table]).where("credit_card IS NULL").all',
     :input => {:name => :table, :example => "--"},
-    :sql => 'REPLACE',
-    :explanation => "BOOKMARK - ACTUALLY BEHAVES AS A PLACEHODER FOR INNER JOIN...Normally joins are handled automatically using the relationships defined in the models, however the joins method can be used to form a temporary relationship. The method expects a table name, but does not escape the value. Applications may set the table name on the client side and pass it as a request parameter. An attacker could tamper with that parameter to achieve injection. In this contrived example, on the value 'orders' would normally work."
+    :sql => "SELECT users.* FROM users 'REPLACE' WHERE (credit_card IS NULL) /* loading for inspect */ LIMIT $1 ",
+    :explanation => "The parameter will be inserted after the FROM clause and before the WHERE clause, but ActiveRecord will not add any text to it, allowing the developer to perform a JOIN, INNER JOIN, or OUTER JOIN. The condition (generally one id column equaling another, must also be specified.  An example valid input would be: JOIN Orders on user_id=users.id."
   },
 
   {
@@ -116,8 +116,8 @@ Queries = [
     :link => "https://api.rubyonrails.org/v6.1.4/classes/ActiveRecord/QueryMethods.html#method-i-select",
     :query => 'User.select(payload[:column])',
     :input => {:name => :column, :example => "* FROM USERS WHERE 0!=$1; --"},
-    :sql => "SELECT 'REPLACE' FROM users LIMIT $1",
-    :explanation => "The select method expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Since the `SELECT` clause is at the beginning of the query, nearly any SQL can be injected and the remainder of the intended query simply commented out."
+    :sql => "SELECT 'REPLACE' FROM users",
+    :explanation => "The select method expects to receive valid column names, but does not escape the text received. If the application passes a column name as a request parameter, an attacker can use the field for injection. Note that some behind the scenes code (likely in the results generation) prevents retrieving data from a different table than the original."
   },
 
   {
